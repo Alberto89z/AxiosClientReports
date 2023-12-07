@@ -66,19 +66,30 @@ const takeAPhoto = () => {
 const saveIncidence = async () => {
   const user = parseJWT();
   const title = document.getElementById('title').value;
-  payload.title = title;
   const type = document.getElementById('type').value;
-  payload.type = type;
   const description = document.getElementById('description').value;
-  payload.description = description;
   const incidenceDate = document.getElementById('incidenceDate').value;
+
+  payload.title = title;
+  payload.type = type;
+  payload.description = description;
   payload.incidenceDate = incidenceDate;
-  payload.userId = user.id;
-  console.log(payload);
+  payload.userId = user.areas[0].id,
+
+    console.log(payload);
   const response = await axiosClient.post(`/incidences/save`, payload);
+  console.log(response);
   if (response.registered) {
+    document.getElementById('title').value = "";
+    document.getElementById('type').value = "";
+    document.getElementById('description').value = "";
+    document.getElementById('incidenceDate').value = "";
+    document.getElementById('modal-map').innerHTML = '<span></span>';
+    $("#modal-camera").css('display', 'none');
+
     toastMessage('Inicencia registrada').showToast();
     getAllIncidencesByEmployee();
+    $('#largeModal').modal('hide');
   } else {
     toastMessage('Nose pudo registrar la incidencia').showToast();
   }
